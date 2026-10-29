@@ -83,9 +83,9 @@ fn probe(hans: bool, korean: bool) -> char {
 fn candidates(hans: bool, korean: bool) -> Vec<&'static str> {
     let (zh, ja, ko): (&[&str], &[&str], &[&str]) = if cfg!(windows) {
         (
-            &["Deng.ttf", "msyh.ttc", "simhei.ttf", "simsun.ttc", "NotoSansSC-VF.ttf"],
+            &["NotoSansSC-VF.ttf", "msyh.ttc", "simhei.ttf", "simsun.ttc", "Deng.ttf"],
             &["YuGothR.ttc", "meiryo.ttc", "msgothic.ttc"],
-            &["malgun.ttf", "malgunsl.ttf", "gulim.ttc", "batang.ttc"],
+            &["NanumGothic.ttf", "malgun.ttf", "malgunsl.ttf", "gulim.ttc", "batang.ttc"],
         )
     } else if cfg!(target_os = "macos") {
         (
@@ -102,27 +102,26 @@ fn candidates(hans: bool, korean: bool) -> Vec<&'static str> {
     } else {
         (
             &[
-                "noto-cjk/NotoSansCJK-Regular.ttc",
-                "opentype/noto/NotoSansCJK-Regular.ttc",
-                "google-noto-sans-cjk-fonts/NotoSansCJK-Regular.ttc",
-                "google-noto-cjk/NotoSansCJK-Regular.ttc",
-                "noto-cjk/NotoSansCJKsc-Regular.otf",
-                "opentype/noto/NotoSansCJKsc-Regular.otf",
-                "adobe-source-han-sans/SourceHanSansCN-Regular.otf",
                 "wenquanyi/wqy-microhei/wqy-microhei.ttc",
                 "truetype/wqy/wqy-microhei.ttc",
                 "wenquanyi/wqy-zenhei/wqy-zenhei.ttc",
                 "truetype/wqy/wqy-zenhei.ttc",
                 "truetype/droid/DroidSansFallbackFull.ttf",
+                "truetype/noto/NotoSansSC-Regular.ttf",
+                "opentype/noto/NotoSansSC-Regular.otf",
             ],
-            &["noto-cjk/NotoSansCJKjp-Regular.otf", "opentype/noto/NotoSansCJKjp-Regular.otf"],
             &[
-                "noto-cjk/NotoSansCJKkr-Regular.otf",
-                "opentype/noto/NotoSansCJKkr-Regular.otf",
-                "google-noto-sans-cjk-fonts/NotoSansCJKkr-Regular.otf",
-                "adobe-source-han-sans/SourceHanSansK-Regular.otf",
-                "opentype/adobe-source-han-sans/SourceHanSansK-Regular.otf",
+                "truetype/vlgothic/VL-Gothic-Regular.ttf",
+                "truetype/ipafont/ipag.ttf",
+                "truetype/noto/NotoSansJP-Regular.ttf",
+                "opentype/noto/NotoSansJP-Regular.otf",
+            ],
+            &[
                 "truetype/nanum/NanumGothic.ttf",
+                "truetype/nanum/NanumBarunGothic.ttf",
+                "opentype/nanum/NanumGothic.otf",
+                "truetype/noto/NotoSansKR-Regular.ttf",
+                "opentype/noto/NotoSansKR-Regular.otf",
             ],
         )
     };
@@ -242,11 +241,11 @@ mod tests {
         assert_eq!(
             names.first(),
             Some(&if cfg!(windows) {
-                "malgun.ttf"
+                "NanumGothic.ttf"
             } else if cfg!(target_os = "macos") {
                 "/System/Library/Fonts/AppleSDGothicNeo.ttc"
             } else {
-                "noto-cjk/NotoSansCJKkr-Regular.otf"
+                "truetype/nanum/NanumGothic.ttf"
             })
         );
         assert_eq!(probe(false, true), '한');

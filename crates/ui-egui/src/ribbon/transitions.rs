@@ -78,7 +78,7 @@ pub(super) fn transitions(app: &mut SlideApp, ui: &mut Ui) {
                     .as_ref()
                     .and_then(|t| t.sound)
                     .and_then(|m| app.session.active().and_then(|d| d.doc.media(m).map(|i| i.name.trim_end_matches(".wav").to_string())))
-                    .unwrap_or_else(|| if stop { "[Stop Previous Sound]".into() } else { "[No Sound]".into() });
+                    .unwrap_or_else(|| if stop { crate::tl!("[Stop Previous Sound]").into() } else { crate::tl!("[No Sound]").into() });
                 let combo = craft_ui::ComboBox::from_id_salt("transition_sound").width(140.0).selected_text(name).show_ui(ui, |ui| {
                     let none = cur.as_ref().is_none_or(|t| t.sound.is_none() && !t.stop_sound);
                     if ui.selectable_label(none, crate::tl!("[No Sound]")).clicked() {

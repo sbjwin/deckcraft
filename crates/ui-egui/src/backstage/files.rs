@@ -290,7 +290,7 @@ pub(super) fn open_page(app: &mut SlideApp, ui: &mut Ui, bs: &mut Backstage) {
             ui.set_width(230.0);
             place_row(ui, Icon::Recent, crate::tl!("Recent"), true, 220.0);
             if place_row(ui, Icon::OpenFolder, crate::tl!("Browse"), false, 220.0)
-                .on_hover_text("Open a presentation from a folder (Ctrl+O)")
+                .on_hover_text(crate::tl!("Open a presentation from a folder (Ctrl+O)"))
                 .clicked()
             {
                 let _ = app.run("app.openDialog", json!({}));
@@ -300,7 +300,7 @@ pub(super) fn open_page(app: &mut SlideApp, ui: &mut Ui, bs: &mut Backstage) {
                 if ui.button(crate::tl!("Recover Unsaved Presentations")).clicked() {
                     match app.run("file.recovery.open", json!({})) {
                         Ok(v) if v.get("opened").and_then(Value::as_array).is_some_and(|a| a.is_empty()) => {
-                            app.set_status("There are no unsaved presentations to recover");
+                            app.set_status(crate::tl!("There are no unsaved presentations to recover"));
                         }
                         _ => {}
                     }

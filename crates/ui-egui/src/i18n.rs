@@ -123,10 +123,12 @@ impl Eq for Lang {}
 impl Lang {
     pub const EN: Lang = Lang { lang: craft_i18n::Lang::EN, catalogs: None };
 
+    /// The internal catalogs handle for this language.
     fn i18n(self) -> &'static I18n {
         self.catalogs.unwrap_or_else(|| LazyLock::force(&I18N))
     }
 
+    /// Return the BCP 47 code for this language (e.g. "en", "ko", "zh-hans").
     pub fn code(self) -> &'static str {
         self.i18n().code(self.lang)
     }
@@ -136,10 +138,12 @@ impl Lang {
         self.i18n().name(self.lang)
     }
 
+    /// Check whether this language prefers Simplified Chinese fonts.
     pub fn prefers_hans(self) -> bool {
         self.code() == "zh-hans"
     }
 
+    /// Check whether this language prefers Korean fonts.
     pub fn prefers_korean(self) -> bool {
         self.code() == "ko"
     }
@@ -237,6 +241,7 @@ pub fn system_lang() -> Lang {
     *SYSTEM.get_or_init(detect_system_lang)
 }
 
+/// Detect the system language from the `DECKCRAFT_LANGUAGE` override or platform locale settings.
 fn detect_system_lang() -> Lang {
     // An explicit override, then the platform's preferred UI languages.
     if let Some(l) = std::env::var("DECKCRAFT_LANGUAGE").ok().and_then(|v| lang_from_tag(&v)) {

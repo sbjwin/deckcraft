@@ -1,15 +1,18 @@
 use super::{Dialog, SlideApp, Tokens, Ui, Value, buttons, check, field, json};
 
+/// Parse the list of pictures and text boxes currently held in the album dialog.
 fn album_items(d: &Dialog) -> Option<Vec<Value>> {
     let raw = d.fields.get("items").map(String::as_str).unwrap_or("[]");
     serde_json::from_str::<Value>(raw).ok().and_then(|v| v.as_array().cloned())
 }
 
+/// Store the updated list of pictures and text boxes back into dialog fields.
 fn store_album_items(d: &mut Dialog, items: &[Value]) {
     let raw = serde_json::to_string(items).unwrap_or_else(|_| "[]".into());
     d.fields.insert("items".into(), raw);
 }
 
+/// Produce a display label for an item in the photo album list.
 fn album_item_label(v: &Value) -> String {
     if let Some(text) = v.get("text").and_then(Value::as_str) {
         let text = text.trim();
@@ -19,6 +22,7 @@ fn album_item_label(v: &Value) -> String {
     }
 }
 
+/// Prompt the user to pick an image file and return its name and base64-encoded payload.
 fn pick_album_picture(app: &mut SlideApp) -> Option<Value> {
     let path = if let Some(pick) = app.services.pick_open.as_mut() {
         pick("picture")
@@ -88,6 +92,7 @@ fn album_choice(ui: &mut Ui, d: &mut Dialog, id: &str, name: &str, key: &str, de
 
 const ALBUM_THEMES: &[&str] = &["DeckCraft", "Harbor", "Ember", "Meadow", "Nocturne", "Paper", "Coral Reef", "Slate"];
 
+/// Determine the theme name active on the current presentation's first master.
 fn current_theme(app: &SlideApp) -> String {
     app.session
         .active()
@@ -97,6 +102,7 @@ fn current_theme(app: &SlideApp) -> String {
         .unwrap_or_else(|| "DeckCraft".into())
 }
 
+/// Parse an album identifier from a JSON value.
 fn album_json_id(v: &Value) -> Option<u64> {
     v.as_u64().or_else(|| v.as_str().and_then(|s| s.trim().parse().ok()))
 }
@@ -132,11 +138,13 @@ fn seed_photo_album(app: &SlideApp, d: &mut Dialog) {
     d.fields.entry("themeWas".into()).or_insert(theme_was);
 }
 
+/// Check whether the currently selected album item is a picture rather than a text box.
 fn selected_album_picture(d: &Dialog, items: &[Value]) -> bool {
     let i = d.fields.get("sel").and_then(|s| s.parse::<usize>().ok()).unwrap_or(0);
     items.get(i).is_some_and(|item| item.get("data").is_some() || item.get("path").is_some())
 }
 
+/// Mutate the JSON object of the currently selected picture item.
 fn with_selected_picture(d: &mut Dialog, f: impl FnOnce(&mut serde_json::Map<String, Value>)) {
     let Some(mut list) = album_items(d) else { return };
     let i = d.fields.get("sel").and_then(|s| s.parse::<usize>().ok()).unwrap_or(0);
@@ -318,6 +326,7 @@ pub(super) fn photo_album_dialog(app: &mut SlideApp, ui: &mut Ui, d: &mut Dialog
     cancel
 }
 
+/// Format rotation, brightness, and contrast values for the selected album picture.
 fn album_picture_status(items: &[Value], sel: usize) -> String {
     let Some(item) = items.get(sel) else {
         return crate::tl!("Select a picture to rotate it or change brightness and contrast").to_string();
@@ -331,6 +340,7 @@ fn album_picture_status(items: &[Value], sel: usize) -> String {
     format!("{} {rot:.0}°, {} {brightness:.1}, {} {contrast:.1}", crate::tl!("Rotation"), crate::tl!("brightness"), crate::tl!("contrast"))
 }
 
+/// Adjust an album picture's numeric property (brightness or contrast) by a given delta.
 fn nudge_picture(d: &mut Dialog, key: &str, delta: f64) {
     with_selected_picture(d, |obj| {
         let cur = obj.get(key).and_then(Value::as_f64).unwrap_or(0.0);

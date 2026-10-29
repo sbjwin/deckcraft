@@ -1332,6 +1332,7 @@ fn dlg_autocorrect(app: &mut SlideApp, ui: &mut Ui, d: &mut Dialog) -> bool {
     ok || cancel
 }
 
+/// Render the Preferences dialog contents (general, appearance, language, editing, and author settings).
 fn dlg_preferences(app: &mut SlideApp, ui: &mut Ui, d: &mut Dialog) -> bool {
     // The controls apply as they change, so the dialog remembers what it opened with and
     // Cancel (or Esc, or the close button: see `show`) puts that back.

@@ -230,7 +230,9 @@ pub fn font_definitions(extra: &[std::sync::Arc<deckcraft_fonts::FontFace>]) -> 
     {
         let lang = crate::i18n::current();
         let need_cjk = lang.uses_cjk() || cfg!(target_os = "windows");
-        if need_cjk && let Some(f) = system_cjk_font(lang.prefers_hans(), lang.prefers_korean() || cfg!(target_os = "windows")) {
+        let hans = lang.prefers_hans();
+        let korean = if lang.uses_cjk() { lang.prefers_korean() } else { cfg!(target_os = "windows") };
+        if need_cjk && let Some(f) = system_cjk_font(hans, korean) {
             let name = format!("system-cjk-{}", f.family);
             if !defs.font_data.contains_key(&name) {
                 let mut data = FontData::from_static(&f.bytes);

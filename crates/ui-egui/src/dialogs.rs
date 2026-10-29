@@ -29,6 +29,7 @@ impl Dialog {
     }
 }
 
+/// Map a dialog identifier to its default English window title.
 fn title(id: &str) -> &'static str {
     match id {
         "table" => "Insert Table",
@@ -157,6 +158,7 @@ fn field(ui: &mut Ui, d: &mut Dialog, label: &str, key: &str, default: &str) {
     d.fields.insert(key.into(), v);
 }
 
+/// Draw a labelled checkbox bound to a dialog boolean key, localized via `crate::i18n::t`.
 fn check(ui: &mut Ui, d: &mut Dialog, label: &str, key: &str, default: bool) -> bool {
     let mut v = d.get(key, if default { "1" } else { "0" }) == "1";
     ui.checkbox(&mut v, crate::i18n::t(label));
@@ -164,18 +166,22 @@ fn check(ui: &mut Ui, d: &mut Dialog, label: &str, key: &str, default: bool) -> 
     v
 }
 
+/// Parse a floating-point number from a dialog field, falling back to `default`.
 fn num(d: &mut Dialog, key: &str, default: f64) -> f64 {
     d.get(key, "").trim().trim_end_matches(['"', '%', ' ']).parse::<f64>().ok().filter(|v| v.is_finite()).unwrap_or(default)
 }
 
+/// Format a float with compact precision for display in dialog fields.
 fn num_text(v: f64) -> String {
     crate::widgets::fmt_num(v, "")
 }
 
+/// Read a dialog field value as a string, returning empty if unset.
 fn field_of(d: &Dialog, key: &str) -> String {
     d.fields.get(key).cloned().unwrap_or_default()
 }
 
+/// Parse a dimension string (possibly with units or percent) into a finite float.
 fn parse_shown(s: &str) -> Option<f64> {
     let t = s.trim().trim_end_matches(['%', '"']).trim();
     if t.is_empty() {
@@ -184,10 +190,12 @@ fn parse_shown(s: &str) -> Option<f64> {
     t.parse().ok().filter(|v: &f64| v.is_finite())
 }
 
+/// Determine whether a dialog field has been edited away from its seeded value.
 fn edited(d: &Dialog, key: &str) -> bool {
     field_of(d, key) != field_of(d, &format!("seed{key}"))
 }
 
+/// Retrieve the unrounded point value stored for a dimension field.
 fn exact_of(d: &Dialog, key: &str) -> Option<f64> {
     parse_shown(&field_of(d, &format!("{key}Pt")))
 }

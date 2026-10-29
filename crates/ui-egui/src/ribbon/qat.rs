@@ -27,12 +27,15 @@ impl Default for QatItem {
 }
 
 impl QatItem {
+    /// Construct a new toolbar item with the specified command id, display label, and icon.
     pub fn new(id: &str, label: &str, icon: Icon) -> Self {
         QatItem { id: id.into(), params: Value::Null, label: label.into(), icon: icon.name().into() }
     }
+    /// Resolve the icon enum for this toolbar item.
     fn icon(&self) -> Icon {
         Icon::from_name(&self.icon).unwrap_or(Icon::More)
     }
+    /// Check whether this item matches a given command id and parameters.
     fn same(&self, id: &str, params: &Value) -> bool {
         self.id == id && (self.params == *params || (self.params.is_null() && params.as_object().is_some_and(|o| o.is_empty())))
     }
@@ -89,6 +92,7 @@ pub fn command(app: &mut SlideApp, p: &Value) -> Result<Value, String> {
     serde_json::to_value(&app.ui.qat).map_err(|e| e.to_string())
 }
 
+/// Execute the action associated with a Quick Access Toolbar button.
 fn run(app: &mut SlideApp, q: &QatItem) {
     match q.id.as_str() {
         "file.save" => app.save(),
@@ -101,6 +105,7 @@ fn run(app: &mut SlideApp, q: &QatItem) {
     }
 }
 
+/// Build the tooltip text for a Quick Access Toolbar button, appending its shortcut if present.
 fn tip(q: &QatItem) -> String {
     let sc =
         deckcraft_engine::find_command(&q.id).and_then(|c| c.shortcut).or_else(|| crate::UI_COMMANDS.iter().find(|c| c.0 == q.id).and_then(|c| c.2));
