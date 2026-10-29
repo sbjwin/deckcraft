@@ -6,6 +6,15 @@
 #![deny(clippy::unwrap_used, clippy::expect_used, clippy::panic, clippy::unimplemented, clippy::todo, clippy::unreachable)]
 #![forbid(unsafe_code)]
 
+/// An English UI string in the current interface language ([`i18n::t`]). Defined before the
+/// modules so each can use it; command ids, document text and file names are never passed through.
+#[macro_export]
+macro_rules! tl {
+    ($s:expr) => {
+        $crate::i18n::t($s)
+    };
+}
+
 pub mod backstage;
 pub mod canvas;
 pub mod capture;
@@ -13,6 +22,7 @@ pub mod control;
 pub mod dialogs;
 pub mod doc_window;
 pub mod eyedropper;
+pub mod i18n;
 pub mod icons;
 pub mod media;
 pub mod menus;
@@ -286,6 +296,7 @@ pub struct SlideApp {
     capture: capture::Capture,
     styled: bool,
     restyle: bool,
+    fonts_lang: Option<i18n::Lang>,
     fonts_ready: bool,
     last_time: f64,
     /// When AutoRecover data was last written (monotonic seconds, not wall time).

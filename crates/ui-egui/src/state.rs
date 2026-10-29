@@ -77,6 +77,8 @@ pub struct UiState {
     pub recent: Vec<String>,
     pub presenter_view: bool,
     pub ui_scale: f32,
+    /// The interface language: [`crate::i18n::AUTO`] (follow the system) or a language code.
+    pub language: String,
     /// Format Shape pane: tab (`fill`, `effects`, `size`, `picture`, `text`).
     pub format_tab: String,
     /// The Text Pane's current SmartArt line (Add Shape, Promote and Demote act on it).
@@ -116,6 +118,7 @@ impl Default for UiState {
             recent: vec![],
             presenter_view: true,
             ui_scale: 1.0,
+            language: crate::i18n::AUTO.into(),
             format_tab: "fill".into(),
             smartart_row: 0,
             smartart_focus: None,
@@ -150,6 +153,11 @@ impl UiState {
         }
         if !short(&self.format_tab) {
             self.format_tab = d.format_tab;
+        }
+        // An unknown code (a newer version's, a build without its catalog) is kept and read as
+        // `auto`; only an absurd one is dropped.
+        if !short(&self.language) {
+            self.language = d.language;
         }
         self.pane = self.pane.filter(short);
         self.recent.retain(|p| !p.is_empty() && p.len() <= 4096 && !p.contains('\0'));

@@ -83,6 +83,7 @@ impl SlideApp {
             capture: capture::Capture::default(),
             styled: false,
             restyle: true,
+            fonts_lang: None,
             fonts_ready: false,
             last_time: 0.0,
             last_recovery: 0.0,
@@ -277,6 +278,8 @@ impl SlideApp {
         let ctx = ui.ctx().clone();
         self.ime_frame_viewport = Some(ctx.viewport_id());
         self.ime_pending = None;
+        // Every pass draws in the chosen interface language (the system's when `auto`).
+        crate::i18n::set_current(crate::i18n::Lang::from_pref(&self.ui.language));
         if !self.ui_setup(&ctx) {
             // This pass is discarded for the new fonts. The input events were already consumed
             // by egui, so keep them queued for the next frame instead of silently losing them.
