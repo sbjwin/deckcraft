@@ -112,7 +112,9 @@ fn candidates(hans: bool, korean: bool) -> Vec<&'static str> {
             ],
             &[
                 "truetype/vlgothic/VL-Gothic-Regular.ttf",
-                "truetype/ipafont/ipag.ttf",
+                "TTF/VL-Gothic-Regular.ttf",
+                "vlgothic/VL-Gothic-Regular.ttf",
+                "truetype/vlgothic/VL-PGothic-Regular.ttf",
                 "truetype/noto/NotoSansJP-Regular.ttf",
                 "opentype/noto/NotoSansJP-Regular.otf",
             ],
