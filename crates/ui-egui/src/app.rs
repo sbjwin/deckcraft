@@ -85,6 +85,7 @@ impl SlideApp {
             restyle: true,
             fonts_lang: None,
             fonts_ready: false,
+            catalog_noted: None,
             last_time: 0.0,
             last_recovery: 0.0,
             quit_confirmed: false,
