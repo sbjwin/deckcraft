@@ -70,10 +70,10 @@ pub(crate) const OUTLINE_TABLES: [&[u8; 4]; 4] = [b"glyf", b"CFF ", b"CFF2", b"V
 
 /// A character only a font for the language has: a simplified-only hanzi, kana, or Hangul.
 fn probe(hans: bool, korean: bool) -> char {
-    if korean {
-        '한'
-    } else if hans {
+    if hans {
         '页'
+    } else if korean {
+        '한'
     } else {
         'の'
     }
@@ -125,10 +125,10 @@ fn candidates(hans: bool, korean: bool) -> Vec<&'static str> {
             ],
         )
     };
-    if korean {
-        ko.iter().chain(ja).chain(zh).copied().collect()
-    } else if hans {
+    if hans {
         zh.to_vec()
+    } else if korean {
+        ko.iter().chain(ja).chain(zh).copied().collect()
     } else {
         ja.iter().chain(zh).copied().collect()
     }
@@ -249,6 +249,22 @@ mod tests {
             })
         );
         assert_eq!(probe(false, true), '한');
+    }
+
+    #[test]
+    fn hans_takes_priority_when_both_hans_and_korean_flags_are_set() {
+        assert_eq!(probe(true, true), '页');
+        let names = candidates(true, true);
+        assert_eq!(
+            names.first(),
+            Some(&if cfg!(windows) {
+                "NotoSansSC-VF.ttf"
+            } else if cfg!(target_os = "macos") {
+                "PingFang.ttc"
+            } else {
+                "wenquanyi/wqy-microhei/wqy-microhei.ttc"
+            })
+        );
     }
 
     #[test]
