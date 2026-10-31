@@ -76,6 +76,9 @@ pub struct UiState {
     pub sorter_zoom: f32,
     pub recent: Vec<String>,
     pub presenter_view: bool,
+    /// Set Up Slide Show ▸ Keep mouse cursor visible: full-screen shows never hide a still pointer,
+    /// for decks with clickable choices (#1445).
+    pub show_keep_cursor: bool,
     pub ui_scale: f32,
     /// The interface language: [`crate::i18n::AUTO`] (follow the system) or a language code.
     pub language: String,
@@ -117,6 +120,7 @@ impl Default for UiState {
             sorter_zoom: 1.0,
             recent: vec![],
             presenter_view: true,
+            show_keep_cursor: false,
             ui_scale: 1.0,
             language: crate::i18n::AUTO.into(),
             format_tab: "fill".into(),
