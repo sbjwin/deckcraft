@@ -15,7 +15,7 @@ use crate::CraftFont;
 
 /// An installed font file chosen for the interface.
 pub struct SystemUiFont {
-    /// The face's family name, e.g. `Malgun Gothic` or `Microsoft YaHei`.
+    /// The face's family name, e.g. `NanumGothic` or `WenQuanYi Micro Hei`.
     pub family: String,
     /// The whole font file.
     pub bytes: Vec<u8>,
@@ -83,7 +83,7 @@ fn probe(hans: bool, korean: bool) -> char {
 fn candidates(hans: bool, korean: bool) -> Vec<&'static str> {
     let (zh, ja, ko): (&[&str], &[&str], &[&str]) = if cfg!(windows) {
         (
-            &["NotoSansSC-VF.ttf", "msyh.ttc", "simhei.ttf", "simsun.ttc", "Deng.ttf"],
+            &["msyh.ttc", "simhei.ttf", "simsun.ttc", "Deng.ttf"],
             &["YuGothR.ttc", "meiryo.ttc", "msgothic.ttc"],
             &["NanumGothic.ttf", "malgun.ttf", "malgunsl.ttf", "gulim.ttc", "batang.ttc"],
         )
@@ -107,24 +107,14 @@ fn candidates(hans: bool, korean: bool) -> Vec<&'static str> {
                 "wenquanyi/wqy-zenhei/wqy-zenhei.ttc",
                 "truetype/wqy/wqy-zenhei.ttc",
                 "truetype/droid/DroidSansFallbackFull.ttf",
-                "truetype/noto/NotoSansSC-Regular.ttf",
-                "opentype/noto/NotoSansSC-Regular.otf",
             ],
             &[
                 "truetype/vlgothic/VL-Gothic-Regular.ttf",
                 "TTF/VL-Gothic-Regular.ttf",
                 "vlgothic/VL-Gothic-Regular.ttf",
                 "truetype/vlgothic/VL-PGothic-Regular.ttf",
-                "truetype/noto/NotoSansJP-Regular.ttf",
-                "opentype/noto/NotoSansJP-Regular.otf",
             ],
-            &[
-                "truetype/nanum/NanumGothic.ttf",
-                "truetype/nanum/NanumBarunGothic.ttf",
-                "opentype/nanum/NanumGothic.otf",
-                "truetype/noto/NotoSansKR-Regular.ttf",
-                "opentype/noto/NotoSansKR-Regular.otf",
-            ],
+            &["truetype/nanum/NanumGothic.ttf", "truetype/nanum/NanumBarunGothic.ttf", "opentype/nanum/NanumGothic.otf"],
         )
     };
     if hans {
@@ -260,7 +250,7 @@ mod tests {
         assert_eq!(
             names.first(),
             Some(&if cfg!(windows) {
-                "NotoSansSC-VF.ttf"
+                "msyh.ttc"
             } else if cfg!(target_os = "macos") {
                 "PingFang.ttc"
             } else {
